@@ -1,0 +1,28 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: thinkany-2api-nginx
+    restart: always
+    ports:
+      - "${NGINX_PORT:-8088}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - thinkany-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: thinkany-2api-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - thinkany-net
+
+networks:
+  thinkany-net:
+    driver: bridge
